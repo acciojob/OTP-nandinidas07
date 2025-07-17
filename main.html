@@ -1,27 +1,83 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Verification Code</title>
+  <style>
+    #verification_heading {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    #verification_subtext {
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+    .code-container {
+      display: flex;
+      gap: 10px;
+    }
+    .code {
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      text-align: center;
+    }
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-	<h1 id="verification_heading">Verify Your Account</h1>
-<p id="verification_subtext">We emailed you the six-digit code...</p>
+  <h1 id="verification_heading">Enter Verification Code</h1>
+  <p id="verification_subtext">We have sent a code to your email</p>
 
-	<div class="code-container">
-  <input type="text" class="code" id="code-1" maxlength="1" />
-  <input type="text" class="code" id="code-2" maxlength="1" />
-  <input type="text" class="code" id="code-3" maxlength="1" />
-  <input type="text" class="code" id="code-4" maxlength="1" />
-  <input type="text" class="code" id="code-5" maxlength="1" />
-  <input type="text" class="code" id="code-6" maxlength="1" />
-</div>
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div class="code-container">
+    <input type="text" class="code" id="code-1" maxlength="1" />
+    <input type="text" class="code" id="code-2" maxlength="1" />
+    <input type="text" class="code" id="code-3" maxlength="1" />
+    <input type="text" class="code" id="code-4" maxlength="1" />
+    <input type="text" class="code" id="code-5" maxlength="1" />
+    <input type="text" class="code" id="code-6" maxlength="1" />
+  </div>
 
+  <script>
+    const inputs = document.querySelectorAll(".code");
+
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        const value = e.target.value;
+
+        if (!/^\d$/.test(value)) {
+          e.target.value = "";
+          return;
+        }
+
+        if (index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace") {
+          if (input.value === "") {
+            if (index > 0) {
+              inputs[index - 1].focus();
+            }
+          } else {
+            input.value = "";
+          }
+        }
+      });
+
+      input.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData("text").slice(0, 6);
+        paste.split("").forEach((char, i) => {
+          if (i < inputs.length && /^\d$/.test(char)) {
+            inputs[i].value = char;
+          }
+        });
+        const next = paste.length < inputs.length ? paste.length : inputs.length - 1;
+        inputs[next].focus();
+      });
+    });
+  </script>
 </body>
-
 </html>
