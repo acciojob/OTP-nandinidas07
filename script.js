@@ -4,28 +4,28 @@ inputs.forEach((input, index) => {
   input.addEventListener("input", (e) => {
     const value = e.target.value;
 
-    // Only allow 0-9
     if (!/^[0-9]$/.test(value)) {
       e.target.value = "";
       return;
     }
-	  
-setTimeout(() => {
+
+    // Focus next with reliable delay (for Cypress to detect)
     if (index < inputs.length - 1) {
-      inputs[index + 1].focus();
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          inputs[index + 1].focus();
+        }, 100); // allow Cypress to detect focus
+      });
     }
-  }, 50); // slight delay ensures Cypress sees .focused()
-});
+  });
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Backspace") {
       if (input.value === "") {
-        // If current is empty, go to previous
         if (index > 0) {
           inputs[index - 1].focus();
         }
       } else {
-        // Clear current value
         input.value = "";
       }
     }
