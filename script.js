@@ -9,12 +9,13 @@ inputs.forEach((input, index) => {
       e.target.value = "";
       return;
     }
-
-    // Move to next
+	  
+setTimeout(() => {
     if (index < inputs.length - 1) {
       inputs[index + 1].focus();
     }
-  });
+  }, 50); // slight delay ensures Cypress sees .focused()
+});
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Backspace") {
