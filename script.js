@@ -1,45 +1,32 @@
-const inputs = document.querySelectorAll(".code");
+const inputs = document.querySelectorAll(".otp-input");
 
 inputs.forEach((input, index) => {
   input.addEventListener("input", (e) => {
     const value = e.target.value;
-
-    if (!/^[0-9]$/.test(value)) {
-      e.target.value = "";
-      return;
+    if (value.length > 1) {
+      input.value = value.charAt(0);
     }
 
-    // Focus next with reliable delay (for Cypress to detect)
-    if (index < inputs.length - 1) {
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          inputs[index + 1].focus();
-        }, 100); // allow Cypress to detect focus
-      });
+    if (value && index < inputs.length - 1) {
+      inputs[index + 1].focus();
     }
   });
 
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace") {
-      if (input.value === "") {
-        if (index > 0) {
-          inputs[index - 1].focus();
-        }
-      } else {
-        input.value = "";
-      }
+    if (e.key === "Backspace" && !input.value && index > 0) {
+      inputs[index - 1].focus();
     }
   });
 
   input.addEventListener("paste", (e) => {
     e.preventDefault();
-    const paste = (e.clipboardData || window.clipboardData).getData("text").slice(0, 6);
-    paste.split('').forEach((char, i) => {
-      if (i < inputs.length) {
-        inputs[i].value = char;
-      }
+    const data = e.clipboardData.getData("text").slice(0, 6);
+    const values = data.split("");
+    values.forEach((char, i) => {
+      if (inputs[i]) inputs[i].value = char;
     });
-    const next = paste.length < inputs.length ? paste.length : inputs.length - 1;
-    inputs[next].focus();
+    if (values.length > 0) {
+      inputs[values.length - 1].focus();
+    }
   });
 });
